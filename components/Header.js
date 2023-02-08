@@ -1,14 +1,36 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MagnifyingGlassIcon,
   GlobeAltIcon,
   Bars3Icon,
 } from '@heroicons/react/24/outline';
-import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { UserCircleIcon, UsersIcon } from '@heroicons/react/24/solid';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRangePicker } from 'react-date-range';
 
 export default function Header() {
+  const [inputData, setInputData] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [numberOfGuest, setNumberOfGuest] = useState(1);
+
+  const handleSelect = (ranges) => {
+    setStartDate(ranges.selection.startDate);
+    setEndDate(ranges.selection.endDate);
+  };
+
+  const handleReset = () => {
+    setInputData('');
+  };
+
+  const selectionRange = {
+    startDate: startDate,
+    endDate: endDate,
+    key: 'selection',
+  };
   return (
     <header className="sticky top-0 grid grid-cols-3 shadow-md z-50 py-5 px-5">
       {/* left */}
@@ -25,6 +47,8 @@ export default function Header() {
       {/* middle */}
       <div className="flex md:border-2 rounded-full py-2">
         <input
+          value={inputData}
+          onChange={(e) => setInputData(e.target.value)}
           placeholder="Start your search"
           className="bg-transparent grow outline-none text-sm pl-5"
         />
@@ -40,6 +64,33 @@ export default function Header() {
           <UserCircleIcon className="w-6" />
         </div>
       </div>
+
+      {inputData && (
+        <div className="flex flex-col col-span-3 mx-auto">
+          <DateRangePicker
+            ranges={[selectionRange]}
+            minDate={new Date()}
+            onChange={handleSelect}
+            rangeColors={['#FD5B61']}
+          />
+          <div className="flex border-b mb-2">
+            <h2 className="grow font-bold">Number Of Guests</h2>
+            <UsersIcon className="h-6" />
+            <input
+              value={numberOfGuest}
+              type="number"
+              className="w-12 outline-none px-2 text-red-400"
+              onChange={(e) => setNumberOfGuest(e.target.value)}
+            />
+          </div>
+          <div className="flex">
+            <button className="grow text-gray-500" onClick={handleReset}>
+              Cancel
+            </button>
+            <button className="grow text-red-400">Search</button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
