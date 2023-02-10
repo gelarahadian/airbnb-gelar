@@ -10,12 +10,15 @@ import { UserCircleIcon, UsersIcon } from '@heroicons/react/24/solid';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
+import { useRouter } from 'next/router';
 
-export default function Header() {
+export default function Header({ placeholder }) {
   const [inputData, setInputData] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numberOfGuest, setNumberOfGuest] = useState(1);
+
+  const router = useRouter();
 
   const handleSelect = (ranges) => {
     setStartDate(ranges.selection.startDate);
@@ -24,6 +27,18 @@ export default function Header() {
 
   const handleReset = () => {
     setInputData('');
+  };
+
+  const search = () => {
+    router.push({
+      pathname: '/search',
+      query: {
+        location: inputData,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        numberOfGuest,
+      },
+    });
   };
 
   const selectionRange = {
@@ -49,7 +64,7 @@ export default function Header() {
         <input
           value={inputData}
           onChange={(e) => setInputData(e.target.value)}
-          placeholder="Start your search"
+          placeholder={placeholder || 'Start your search'}
           className="bg-transparent grow outline-none text-sm pl-5"
         />
         <MagnifyingGlassIcon className="hidden md:inline-block w-8 bg-red-500 rounded-full p-2 text-white md:mx-2 cursor-pointer" />
@@ -87,7 +102,9 @@ export default function Header() {
             <button className="grow text-gray-500" onClick={handleReset}>
               Cancel
             </button>
-            <button className="grow text-red-400">Search</button>
+            <button className="grow text-red-400" onClick={search}>
+              Search
+            </button>
           </div>
         </div>
       )}
