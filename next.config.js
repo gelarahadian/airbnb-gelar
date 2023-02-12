@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ['links.papareact.com'],
   },
+  env: {
+    MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN
+  }
 };
 
 module.exports = nextConfig;
